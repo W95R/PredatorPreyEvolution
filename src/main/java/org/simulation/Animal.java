@@ -1,21 +1,41 @@
 package org.simulation;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Animal extends Entity{
+    protected float directionAngle;
+
     protected final Specie specie;
     protected final int death_time;
     protected final boolean isMale;
 
     protected float speed;
-    protected float FieldOfView;
+    protected float fieldOfView;
 
-    public Animal(Environment environment, Point startingPosition, Specie specie, boolean assignRandomAge) {
+    protected float nextMoveDirectionAngle;
+    protected AnimalStatus status = AnimalStatus.WANDERING;
+
+
+    public Animal(Environment environment, Point startingPosition, Specie specie) {
         super(environment, startingPosition);
         this.environment.addAnimal(this);
-        this.specie = specie;
-        this.death_time = 100 - (assignRandomAge ? 0 : 50);
         this.isMale = Math.random() < 0.5;
+        this.specie = specie;
+        this.death_time = this.environment.getTime() + this.specie.getRandomLifeDuration();
+    }
+    public Animal(Environment environment, Point startingPosition, Specie specie, float speed, float fieldOfView) {
+        super(environment, startingPosition);
+        this.environment.addAnimal(this);
+        this.isMale = Math.random() < 0.5;
+        this.specie = specie;
+        this.death_time = this.environment.getTime() + this.specie.getRandomLifeDuration();
+        this.speed = speed;
+        this.fieldOfView = fieldOfView;
+    }
+
+    public void predictNextMove() {
+
     }
 
     @Override
@@ -39,6 +59,9 @@ public class Animal extends Entity{
     protected void reproduce(Entity target) {}
     protected float getEnergyUsage(){
         return 0.0f;
+    }
+    protected float getVisibilityDistance() {
+        return 1f;
     }
 
     @Override

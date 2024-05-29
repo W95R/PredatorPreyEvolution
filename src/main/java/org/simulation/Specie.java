@@ -1,13 +1,16 @@
 package org.simulation;
 
+import java.util.Random;
+
 public class Specie {
-    private final Class<? extends Animal> animalType;
+    private Class<? extends Animal> animalType;
     private String name;
     private int startingPopulation;
 
     private int startingSpeed;
     private float startingFieldOfView;
     private float startingReproductionRate;
+
     private boolean doEvolveSpeed;
     private boolean doEvolveFieldOfView;
     private boolean doEvolveReproductionRate;
@@ -17,9 +20,8 @@ public class Specie {
 
     private boolean isCannibalistic;
 
-    public Specie(Class<? extends Animal> animalType, String name) {
-        this.animalType = animalType;
-        this.name = name;
+    public Specie(Class<? extends Animal> type) {
+        this.animalType = type;
     }
 
     public void setName(String name) {   this.name = name; }
@@ -36,10 +38,8 @@ public class Specie {
     public void setLifeDurationAverage(float lifeDurationAverage) { this.lifeDurationAverage = lifeDurationAverage; }
     public void setLifeDurationStandardDeviation(float lifeDurationStandardDeviation) { this.lifeDurationStandardDeviation = lifeDurationStandardDeviation; }
 
-    public void setCannibalistic(boolean cannibalistic) { this.isCannibalistic = cannibalistic; }
+    public void setIsCannibalistic(boolean isCannibalistic) { this.isCannibalistic = isCannibalistic; }
 
-
-    public Class<? extends Animal> getAnimalType() { return this.animalType; }
     public String getName() { return this.name; }
     public int getStartingPopulation() { return this.startingPopulation; }
 
@@ -53,5 +53,10 @@ public class Specie {
 
     public float getLifeDurationAverage() { return this.lifeDurationAverage; }
     public float getLifeDurationStandardDeviation() { return this.lifeDurationStandardDeviation; }
-    public boolean isCannibalistic() { return this.isCannibalistic; }
+    public int getRandomLifeDuration() {
+        Random rand = new Random();
+        return (int) (rand.nextGaussian() * this.lifeDurationStandardDeviation + this.lifeDurationAverage);
+    }
+
+    public boolean getIsCannibalistic() {return this.isCannibalistic;}
 }

@@ -3,8 +3,8 @@ package org.simulation;
 import java.util.ArrayList;
 
 public class Carnivore extends Animal {
-    public Carnivore(Environment environment, Point startingPosition, Specie specie, boolean assignRandomAge) {
-        super(environment, startingPosition, specie, assignRandomAge);
+    public Carnivore(Environment environment, Point startingPosition, Specie specie) {
+        super(environment, startingPosition, specie);
     }
     @Override
     protected ArrayList<Entity> getTargets() {

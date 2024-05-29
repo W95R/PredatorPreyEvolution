@@ -12,16 +12,34 @@ public class Environment {
     private int time;
 
     public Environment() {
+        size = new Point(0, 0);
         this.animals = new ArrayList<>();
         this.plants = new ArrayList<>();
         this.herbivorousSpecies = new ArrayList<>();
         this.carnivorousSpecies = new ArrayList<>();
     }
 
+    public void setup() {
+        plants.clear();
+        for (int i = Plant.startingPopulation; i > 0; i--)
+            new Plant(this, this.size.getRandomPointInBox());
+
+        animals.clear();
+        for(Specie specie : this.carnivorousSpecies)
+            for (int i = specie.getStartingPopulation(); i > 0; i--)
+                new Carnivore(this, this.size.getRandomPointInBox(), specie);
+        for(Specie specie : this.herbivorousSpecies)
+            for (int i = specie.getStartingPopulation(); i > 0; i--)
+                new Herbivore(this, this.size.getRandomPointInBox(), specie);
+
+        this.time = 0;
+    }
+
     public void update() {
         this.time++;
-        for (Plant plant : this.plants) plant.update();
+        for (Animal animal : this.animals) animal.predictNextMove();
         for (Animal animal : this.animals) animal.update();
+        for (Plant plant : this.plants) plant.update();
     }
 
     public void addAnimal(Animal animal) { this.animals.add(animal); }
