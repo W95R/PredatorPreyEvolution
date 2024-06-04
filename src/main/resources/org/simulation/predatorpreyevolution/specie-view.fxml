@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.ColorPicker?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.simulation.predatorpreyevolution.SpecieViewController" hgap="10" vgap="10" style="-fx-padding: 10;">
+    <Label text="Name:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+    <TextField fx:id="nameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+    <Label text="Color:" />
+    <ColorPicker fx:id="colorColorPicker" />
+
+    <Label text="Starting Population:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+    <TextField fx:id="startingPopulationField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+    <Label text="Starting Speed:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+    <TextField fx:id="startingSpeedField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+    <Label text="Starting Field of View:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+    <TextField fx:id="startingFieldOfViewField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+    <Label text="Starting Reproduction Rate:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+    <TextField fx:id="startingReproductionRateField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+    <Label text="Evolve Speed:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+    <CheckBox fx:id="doEvolveSpeedCheckBox" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+    <Label text="Evolve Field of View:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+    <CheckBox fx:id="doEvolveFieldOfViewCheckBox" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+    <Label text="Evolve Reproduction Rate:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+    <CheckBox fx:id="doEvolveReproductionRateCheckBox" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+
+    <Label text="Life Duration Average:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+    <TextField fx:id="lifeDurationAverageField" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+
+    <Label text="Life Duration Standard Deviation:" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
+    <TextField fx:id="lifeDurationStandardDeviationField" GridPane.rowIndex="9" GridPane.columnIndex="1"/>
+
+    <Label text="Cannibalistic:" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
+    <CheckBox fx:id="isCannibalisticCheckBox" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
+
+    <Button text="Save" onAction="#saveSpecie" GridPane.rowIndex="11" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+</GridPane>

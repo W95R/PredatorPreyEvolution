@@ -1,4 +1,4 @@
-package org.simulation;
+package org.simulation.predatorpreyevolution;
 
 public class Entity {
     protected Point position;

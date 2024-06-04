@@ -1,10 +1,12 @@
-package org.simulation;
+package org.simulation.predatorpreyevolution;
 
 import java.util.Random;
+import javafx.scene.paint.Color;
 
 public class Specie {
     private Class<? extends Animal> animalType;
     private String name;
+    private Color color;
     private int startingPopulation;
 
     private int startingSpeed;
@@ -22,6 +24,7 @@ public class Specie {
 
     public Specie(Class<? extends Animal> type) {
         this.animalType = type;
+        this.color = Color.RED;
     }
 
     public void setName(String name) {   this.name = name; }
@@ -59,4 +62,11 @@ public class Specie {
     }
 
     public boolean getIsCannibalistic() {return this.isCannibalistic;}
+
+    public Color getColor() {
+        return color;
+    }
+    public void setColor(Color color) {
+        this.color = color;
+    }
 }

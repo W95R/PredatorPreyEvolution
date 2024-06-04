@@ -1,4 +1,4 @@
-package org.simulation;
+package org.simulation.predatorpreyevolution;
 
 public class Plant extends Entity{
     protected static int expansionRate;

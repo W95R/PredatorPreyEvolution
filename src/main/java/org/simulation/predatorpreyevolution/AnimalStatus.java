@@ -1,4 +1,4 @@
-package org.simulation;
+package org.simulation.predatorpreyevolution;
 
 public enum AnimalStatus {
     EATING,

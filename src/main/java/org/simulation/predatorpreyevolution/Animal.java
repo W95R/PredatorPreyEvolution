@@ -1,4 +1,4 @@
-package org.simulation;
+package org.simulation.predatorpreyevolution;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,4 +66,6 @@ public class Animal extends Entity{
 
     @Override
     public void kill() { this.environment.removeAnimal(this); }
+
+    public Specie getSpecie() { return this.specie; }
 }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.simulation.predatorpreyevolution.MainViewController">
+    <left>
+        <VBox spacing="10" style="-fx-padding: 10;">
+            <Label text="Settings" />
+            <Label text="Point Size:" />
+            <TextField fx:id="pointSizeField" />
+            <Label text="Point Color:" />
+            <ColorPicker fx:id="colorPicker" />
+            <Button text="Clear Canvas" onAction="#clearCanvas"/>
+        </VBox>
+    </left>
+    <center>
+        <Canvas fx:id="canvas" width="600" height="400" />
+    </center>
+</BorderPane>

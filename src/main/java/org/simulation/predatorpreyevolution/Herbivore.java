@@ -1,4 +1,4 @@
-package org.simulation;
+package org.simulation.predatorpreyevolution;
 
 import java.util.ArrayList;
 
