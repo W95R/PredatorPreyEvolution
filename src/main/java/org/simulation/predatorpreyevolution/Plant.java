@@ -1,15 +1,15 @@
 package org.simulation.predatorpreyevolution;
 
 public class Plant extends Entity{
-    protected static int expansionRate;
-    protected static int energyIncreaseRate;
-    protected static int startingEnergy;
+    private static int expansionRate = 5;
+    private static int energyIncreaseRate = 10;
+    private static int startingEnergy = 10;
 
-    protected static int startingPopulation;
+    private static int startingPopulation = 100;
 
-    public Plant(Environment environment, Point startingPosition) {
-        super(environment, startingPosition);
-        this.environment.addPlant(this);
+    public Plant(Point startingPosition) {
+        super(startingPosition);
+        Environment.addPlantToAdditionList(this);
         this.energy = startingEnergy;
     }
 
@@ -17,6 +17,12 @@ public class Plant extends Entity{
     public void update() {
         super.update();
         this.energy += energyIncreaseRate;
+    }
+
+    public static void updatePlants() {
+        for (int i = Math.min(10000 - Environment.getPlants().size(), expansionRate); i > 0; i--)
+            new Plant(Environment.getSize().getRandomPointInBox());
+        System.out.println(Environment.getPlants().size());
     }
 
     public static void setExpansionRate(int expansionRate) { Plant.expansionRate = expansionRate; }
@@ -29,5 +35,5 @@ public class Plant extends Entity{
     public static int getStartingEnergy() { return Plant.startingEnergy; }
     public static int getStartingPopulation() { return Plant.startingPopulation; }
 
-    @Override public void kill() { this.environment.removePlant(this); }
+    @Override public void kill() { Environment.addPlantToRemovalList(this); }
 }

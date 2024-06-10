@@ -2,12 +2,10 @@ package org.simulation.predatorpreyevolution;
 
 public class Entity {
     protected Point position;
-    protected Environment environment;
     protected float energy;
 
-    public Entity(Environment environment, Point startingPosition) {
+    public Entity(Point startingPosition) {
         this.position = startingPosition;
-        this.environment = environment;
         this.energy = 0;
     }
 

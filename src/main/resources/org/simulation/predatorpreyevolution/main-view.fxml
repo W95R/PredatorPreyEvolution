@@ -2,21 +2,47 @@
 
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Slider?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.simulation.predatorpreyevolution.MainViewController">
     <left>
         <VBox spacing="10" style="-fx-padding: 10;">
-            <Label text="Settings" />
-            <Label text="Point Size:" />
-            <TextField fx:id="pointSizeField" />
-            <Label text="Point Color:" />
-            <ColorPicker fx:id="colorPicker" />
-            <Button text="Clear Canvas" onAction="#clearCanvas"/>
+            <GridPane xmlns:fx="http://javafx.com/fxml" hgap="10" vgap="10" minHeight="200" minWidth="400" style="-fx-padding: 10;">
+                <Label text="Herbivores: " GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                <ComboBox fx:id="herbivorousSpeciesComboBox" GridPane.rowIndex="1" GridPane.columnIndex="0" minWidth="200" maxWidth="200"/>
+                <Button text="Edit Selected Specie" onAction="#editHerbivorousSpecie" GridPane.rowIndex="1" GridPane.columnIndex="1" minWidth="200" maxWidth="200"/>
+                <Button text="Add New Herbivore" onAction="#addHerbivorousSpecie" GridPane.rowIndex="2" GridPane.columnIndex="0" minWidth="410"  GridPane.columnSpan="2"/>
+                <Label text=" " GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+
+                <Label text="Carnivores: " GridPane.rowIndex="4" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                <ComboBox fx:id="carnivorousSpeciesComboBox" GridPane.rowIndex="5" GridPane.columnIndex="0" minWidth="200" maxWidth="200"/>
+                <Button text="Edit Selected Specie" onAction="#editCarnivorousSpecie" GridPane.rowIndex="5" GridPane.columnIndex="1" minWidth="200" maxWidth="200"/>
+                <Button text="Add New Carnivore" onAction="#addCarnivorousSpecie" GridPane.rowIndex="6" GridPane.columnIndex="0" minWidth="410" GridPane.columnSpan="2"/>
+                <Label text=" " GridPane.rowIndex="7" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+
+                <Label text="Plants: " GridPane.rowIndex="8" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                <Label text="Starting Population:" GridPane.rowIndex="9" GridPane.columnIndex="0" minWidth="200" maxWidth="200"/>
+                <TextField fx:id="plantStartingPopulationField" GridPane.rowIndex="9" GridPane.columnIndex="1" minWidth="200" maxWidth="200"/>
+                <Label text="Expansion Rate:" GridPane.rowIndex="10" GridPane.columnIndex="0" minWidth="200" maxWidth="200"/>
+                <TextField fx:id="plantExpansionRateField" GridPane.rowIndex="10" GridPane.columnIndex="1" minWidth="200" maxWidth="200"/>
+                <Label text="Energy Increase Rate:" GridPane.rowIndex="11" GridPane.columnIndex="0" minWidth="200" maxWidth="200"/>
+                <TextField fx:id="plantEnergyIncreaseRateField" GridPane.rowIndex="11" GridPane.columnIndex="1" minWidth="200" maxWidth="200"/>
+                <Label text="Starting Energy:" GridPane.rowIndex="12" GridPane.columnIndex="0" minWidth="200" maxWidth="200"/>
+                <TextField fx:id="plantStartingEnergyField" GridPane.rowIndex="12" GridPane.columnIndex="1" minWidth="200" maxWidth="200"/>
+                <Button text="Apply Plant Settings" onAction="#updatePlantSettings" GridPane.rowIndex="13" GridPane.columnIndex="0" minWidth="410" GridPane.columnSpan="2"/>
+                <Label text=" " GridPane.rowIndex="14" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+
+                <Button fx:id="runButton" text="Run" onAction="#runSimulation" GridPane.rowIndex="15" GridPane.columnIndex="0" minWidth="200"/>
+                <Button fx:id="pauseButton" text="Pause" onAction="#pauseSimulation" GridPane.rowIndex="15" GridPane.columnIndex="1" minWidth="200"/>
+                <Slider fx:id="simulationSpeedSlider" max="200" majorTickUnit="10" minorTickCount="1" showTickLabels="true" showTickMarks="true" minWidth="410" GridPane.rowIndex="16" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                <Button text="FC" onAction="#forceClear" GridPane.rowIndex="17" GridPane.columnIndex="1" minWidth="200"/>
+            </GridPane>
         </VBox>
     </left>
     <center>

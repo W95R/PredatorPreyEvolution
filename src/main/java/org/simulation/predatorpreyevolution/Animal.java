@@ -1,9 +1,8 @@
 package org.simulation.predatorpreyevolution;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class Animal extends Entity{
+public abstract class Animal extends Entity{
     protected float directionAngle;
 
     protected final Specie specie;
@@ -17,19 +16,19 @@ public class Animal extends Entity{
     protected AnimalStatus status = AnimalStatus.WANDERING;
 
 
-    public Animal(Environment environment, Point startingPosition, Specie specie) {
-        super(environment, startingPosition);
-        this.environment.addAnimal(this);
+    public Animal(Point startingPosition, Specie specie) {
+        super(startingPosition);
+        Environment.addAnimalToAdditionList(this);
         this.isMale = Math.random() < 0.5;
         this.specie = specie;
-        this.death_time = this.environment.getTime() + this.specie.getRandomLifeDuration();
+        this.death_time = Environment.getTime() + this.specie.getRandomLifeDuration();
     }
-    public Animal(Environment environment, Point startingPosition, Specie specie, float speed, float fieldOfView) {
-        super(environment, startingPosition);
-        this.environment.addAnimal(this);
+    public Animal(Point startingPosition, Specie specie, float speed, float fieldOfView) {
+        super(startingPosition);
+        Environment.addAnimalToAdditionList(this);
         this.isMale = Math.random() < 0.5;
         this.specie = specie;
-        this.death_time = this.environment.getTime() + this.specie.getRandomLifeDuration();
+        this.death_time = Environment.getTime() + this.specie.getRandomLifeDuration();
         this.speed = speed;
         this.fieldOfView = fieldOfView;
     }
@@ -40,18 +39,42 @@ public class Animal extends Entity{
 
     @Override
     public void update() {
-        if (death_time > this.environment.getTime()) this.kill();
+        this.getTargets();
+        if (death_time > Environment.getTime()) this.kill();
         this.energy -= this.getEnergyUsage();
-        if (energy <= 0) this.kill();
+        // if (energy <= 0) this.kill();
     }
 
-    protected ArrayList<Entity> getTargets() {
-        return new ArrayList<>();
+    protected abstract boolean isTarget(Entity entity);
+    protected abstract boolean isEnemy(Animal animal);
+    protected boolean isReproductoryTarget(Animal animal) {
+        return animal.getSpecie().equals(this.specie) && animal.isMale != this.isMale;
     }
-    protected ArrayList<Animal> getReproductoryTargets() { return new ArrayList<>(); }
-    protected ArrayList<Entity> getEnemies() {
-        return new ArrayList<>();
+    protected boolean isEntityVisible(Entity entity) {
+        return this.position.checkIfVisible(
+                entity.getPosition(),
+                this.directionAngle,
+                this.fieldOfView,
+                this.getVisibilityDistance()
+        );
     }
+
+    protected abstract ArrayList<Entity> getTargets();
+    protected ArrayList<Animal> getEnemies() {
+        ArrayList<Animal> enemies = new ArrayList<>();
+        for (Animal animal : Environment.getAnimals())
+            if (this.isEnemy(animal) && this.isEntityVisible(animal))
+                enemies.add(animal);
+        return enemies;
+    }
+    protected ArrayList<Animal> getReproductoryTargets() {
+        ArrayList<Animal> targets = new ArrayList<>();
+        for (Animal animal : Environment.getAnimals())
+            if (this.isReproductoryTarget(animal) && this.isEntityVisible(animal))
+                targets.add(animal);
+        return targets;
+    }
+
     protected Point getDirection() {
         return new Point(0, 0);
     }
@@ -65,7 +88,7 @@ public class Animal extends Entity{
     }
 
     @Override
-    public void kill() { this.environment.removeAnimal(this); }
+    public void kill() { Environment.addAnimalToRemovalList(this); }
 
     public Specie getSpecie() { return this.specie; }
 }
