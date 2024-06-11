@@ -34,6 +34,7 @@ public class Environment {
     private static MainViewController mainViewController;
 
     public static void setup() {
+        Environment.time = 0;
         plants.clear();
         for (int i = Plant.getStartingPopulation(); i > 0; i--)
             new Plant(Environment.size.getRandomPointInBox());
@@ -49,7 +50,6 @@ public class Environment {
         Environment.commitPlantAddition();
         Environment.commitAnimalAddition();
 
-        Environment.time = 0;
         printBoardState();
     }
 
@@ -77,27 +77,6 @@ public class Environment {
         Environment.commitPlantAddition();
         Environment.printBoardState();
         Environment.mainViewController.updateGraphs();
-//        float animalsCount = 0;
-//        float averageSpeed = 0;
-//        float averageFOV = 0;
-//        float averageVA = 0;
-//        for (Animal animal : Environment.animals) {
-//            if(!animal.getSpecie().getName().equals("Rabbit"))
-//                continue;
-//            animalsCount++;
-//            averageSpeed += animal.speed;
-//            averageFOV += animal.fieldOfView;
-//            averageVA += animal.viewArea;
-//        }
-//        if(animalsCount > 0) {
-//            averageSpeed /= animalsCount;
-//            averageFOV /= animalsCount;
-//            averageVA /= animalsCount;
-//        }
-//
-//        Environment.mainViewController.setSpeedLabel(averageSpeed);
-//        Environment.mainViewController.setFOVLabel(averageFOV);
-//        Environment.mainViewController.setVaLabel(averageVA);
     }
 
     public static void addAnimalToAdditionList(Animal animal) { Environment.animalsToAdd.add(animal); }

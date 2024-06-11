@@ -42,8 +42,8 @@ public class Specie {
         this.speedEvolutionRate = 0.3f;
         this.fieldOfViewEvolutionRate = 0.05f * 10;
         this.viewAreaEvolutionRate = 50f * 10;
-        this.lifeDurationAverage = 300;
-        this.lifeDurationStandardDeviation = 50;
+        this.lifeDurationAverage = 100;
+        this.lifeDurationStandardDeviation = 10;
         this.reproductionRate = 1;
         this.isCannibalistic = false;
         this.reproduceByDivision = true;

@@ -33,7 +33,7 @@ public abstract sealed class Animal extends Entity permits Carnivore, Herbivore 
         this.reproductoryTimeOut = Environment.getTime() + Animal.bornReproductoryTimeout;
         this.directionAngle = (float) Math.random() * Point.FULL_ANGLE;
         this.energy = this.getEnergyUsage() * bornReproductoryTimeout;
-        this.reproductionTime = Environment.getTime() + this.specie.getRandomLifeDuration() / 2;
+        this.reproductionTime = Environment.getTime() + this.specie.getRandomLifeDuration() / 3;
     }
     public Animal(Point startingPosition, Specie specie, float baseSpeed, float baseFieldOfView, float baseViewArea) {
         super(startingPosition);
@@ -47,7 +47,7 @@ public abstract sealed class Animal extends Entity permits Carnivore, Herbivore 
         this.reproductoryTimeOut = Environment.getTime() + 20;
         this.directionAngle = (float) Math.random() * Point.FULL_ANGLE;
         this.energy = this.getEnergyUsage() * bornReproductoryTimeout;
-        this.reproductionTime = Environment.getTime() + this.specie.getRandomLifeDuration() / 2;
+        this.reproductionTime = Environment.getTime() + this.specie.getRandomLifeDuration() / 3;
     }
 
     public void predictNextMove() {
@@ -240,6 +240,11 @@ public abstract sealed class Animal extends Entity permits Carnivore, Herbivore 
     protected float getEnergyUsage(){
         return (this.speed * this.speed + this.viewArea / 150)/5;
     }
+
+    /**
+     * Calculates visibility distance based on animal's characteristics
+     * @return visibility distance
+     */
     protected float getVisibilityDistance() {
         return (float) Math.sqrt(2 * this.viewArea / this.fieldOfView);
     }

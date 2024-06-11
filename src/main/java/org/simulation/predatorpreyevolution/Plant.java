@@ -1,11 +1,11 @@
 package org.simulation.predatorpreyevolution;
 
 public final class Plant extends Entity {
-    private static int expansionRate = 5;
+    private static int expansionRate = 20;
     private static int energyIncreaseRate = 10;
-    private static int startingEnergy = 50;
+    private static int startingEnergy = 100;
 
-    private static int startingPopulation = 200;
+    private static int startingPopulation = 2000;
 
     public Plant(Point startingPosition) {
         super(startingPosition);

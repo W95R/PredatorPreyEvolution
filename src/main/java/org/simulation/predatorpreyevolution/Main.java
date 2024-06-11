@@ -19,14 +19,17 @@ public class Main extends Application {
         Specie defaultHerbivoreSpecie = new Specie(Herbivore.class);
         defaultHerbivoreSpecie.setName("Rabbit");
         defaultHerbivoreSpecie.setColor(Color.rgb(150, 150, 150));
-        defaultHerbivoreSpecie.setStartingPopulation(200);
+        defaultHerbivoreSpecie.setStartingPopulation(500);
+        defaultHerbivoreSpecie.setStartingSpeed(4f);
         defaultHerbivoreSpecie.setStartingFieldOfView(6f);
         Environment.addSpecie(defaultHerbivoreSpecie);
 
         Specie defaultCarnivoreSpecie = new Specie(Carnivore.class);
         defaultCarnivoreSpecie.setName("Wolf");
         defaultCarnivoreSpecie.setColor(Color.rgb(0, 0, 0));
-        defaultCarnivoreSpecie.setStartingPopulation(50);
+        defaultCarnivoreSpecie.setStartingPopulation(10);
+        defaultCarnivoreSpecie.setStartingSpeed(5.5f);
+        defaultCarnivoreSpecie.setStartingViewArea(7000f);
         Environment.addSpecie(defaultCarnivoreSpecie);
 
         stage.setTitle("PPE");
