@@ -9,6 +9,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.chart.ScatterChart?>
+<?import javafx.scene.chart.NumberAxis?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.simulation.predatorpreyevolution.MainViewController">
     <left>
@@ -41,11 +43,42 @@
                 <Button fx:id="runButton" text="Run" onAction="#runSimulation" GridPane.rowIndex="15" GridPane.columnIndex="0" minWidth="200"/>
                 <Button fx:id="pauseButton" text="Pause" onAction="#pauseSimulation" GridPane.rowIndex="15" GridPane.columnIndex="1" minWidth="200"/>
                 <Slider fx:id="simulationSpeedSlider" max="200" majorTickUnit="10" minorTickCount="1" showTickLabels="true" showTickMarks="true" minWidth="410" GridPane.rowIndex="16" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
-                <Button text="FC" onAction="#forceClear" GridPane.rowIndex="17" GridPane.columnIndex="1" minWidth="200"/>
+                <Label fx:id="speedLabel" text=" " GridPane.rowIndex="17" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                <Label fx:id="fovLabel" text=" " GridPane.rowIndex="18" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                <Label fx:id="vaLabel" text=" " GridPane.rowIndex="19" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
             </GridPane>
         </VBox>
     </left>
     <center>
         <Canvas fx:id="canvas" width="600" height="400" />
     </center>
+    <right>
+        <GridPane xmlns:fx="http://javafx.com/fxml" hgap="10" vgap="10" minHeight="200" minWidth="400" style="-fx-padding: 10;">
+            <ComboBox fx:id="allSpeciesComboBox" GridPane.rowIndex="0" />
+            <ScatterChart fx:id="speedToFOVChart" layoutX="14.0" layoutY="14.0" maxHeight="300.0" maxWidth="300.0" GridPane.rowIndex="1" animated="false">
+                <xAxis>
+                    <NumberAxis label="Speed" lowerBound="0" upperBound="20" tickUnit="1" autoRanging="false" animated="false"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Field of View" lowerBound="0" upperBound="7" tickUnit="1" autoRanging="false" animated="false"/>
+                </yAxis>
+            </ScatterChart>
+            <ScatterChart fx:id="speedToVAChart" layoutX="14.0" layoutY="14.0" maxHeight="300.0" maxWidth="300.0" GridPane.rowIndex="2" animated="false">
+                <xAxis>
+                    <NumberAxis label="Speed" lowerBound="0" upperBound="20" tickUnit="1" autoRanging="false"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="View Area" lowerBound="0" upperBound="20000" tickUnit="100" autoRanging="false"/>
+                </yAxis>
+            </ScatterChart>
+            <ScatterChart fx:id="FOVToVAChart" layoutX="14.0" layoutY="14.0" maxHeight="300.0" maxWidth="300.0" GridPane.rowIndex="3" animated="false">
+                <xAxis>
+                    <NumberAxis label="Field of View" lowerBound="0" upperBound="7" tickUnit="1" autoRanging="false"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="View Area" lowerBound="0" upperBound="20000" tickUnit="100" autoRanging="false"/>
+                </yAxis>
+            </ScatterChart>
+        </GridPane>
+    </right>
 </BorderPane>

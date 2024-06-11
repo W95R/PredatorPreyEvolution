@@ -6,6 +6,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.chart.ScatterChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -16,6 +18,7 @@ public class MainViewController {
 
     public ComboBox<String> herbivorousSpeciesComboBox;
     public ComboBox<String> carnivorousSpeciesComboBox;
+    public ComboBox<String> allSpeciesComboBox;
 
     public TextField plantStartingPopulationField;
     public TextField plantExpansionRateField;
@@ -24,6 +27,12 @@ public class MainViewController {
     public Button runButton;
     public Button pauseButton;
     public Slider simulationSpeedSlider;
+    public Label speedLabel;
+    public Label fovLabel;
+    public Label vaLabel;
+    public ScatterChart<Float, Float> speedToFOVChart;
+    public ScatterChart<Float, Float> speedToVAChart;
+    public ScatterChart<Float, Float> FOVToVAChart;
 
     private float pointSize = 5f;
 
@@ -45,6 +54,7 @@ public class MainViewController {
         pauseButton.setDisable(true);
         simulationSpeedSlider.setValue(Environment.getSimulationFramerate());
         simulationSpeedSlider.valueProperty().addListener((observable, oldValue, newValue) -> {Environment.setSimulationFramerate(newValue.intValue());});
+        allSpeciesComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {this.updateGraphs();});
         this.canvasGraphicsContext = canvas.getGraphicsContext2D();
     }
 
@@ -74,18 +84,25 @@ public class MainViewController {
     public void updateSpecies() {
         String herbivorousSpeciesValue = this.herbivorousSpeciesComboBox.getValue();
         String carnivorousSpeciesValue = this.carnivorousSpeciesComboBox.getValue();
+        String allSpeciesValue = this.allSpeciesComboBox.getValue();
         herbivorousSpeciesComboBox.getItems().clear();
         carnivorousSpeciesComboBox.getItems().clear();
+        allSpeciesComboBox.getItems().clear();
         for (Specie specie: Environment.getHerbivorousSpecies())
             herbivorousSpeciesComboBox.getItems().add(specie.getName());
         for (Specie specie: Environment.getCarnivorousSpecies())
             carnivorousSpeciesComboBox.getItems().add(specie.getName());
+        allSpeciesComboBox.getItems().addAll(herbivorousSpeciesComboBox.getItems());
+        allSpeciesComboBox.getItems().addAll(carnivorousSpeciesComboBox.getItems());
         herbivorousSpeciesComboBox.setValue(herbivorousSpeciesValue);
         carnivorousSpeciesComboBox.setValue(carnivorousSpeciesValue);
+        allSpeciesComboBox.setValue(allSpeciesValue);
         if (herbivorousSpeciesValue == null)
             herbivorousSpeciesComboBox.getSelectionModel().select(0);
         if (carnivorousSpeciesValue == null)
             carnivorousSpeciesComboBox.getSelectionModel().select(0);
+        if (allSpeciesValue == null)
+            allSpeciesComboBox.getSelectionModel().select(0);
     }
 
     public void addHerbivorousSpecie(ActionEvent actionEvent) {
@@ -175,4 +192,33 @@ public class MainViewController {
     public void forceClear(ActionEvent actionEvent) {
         clearCanvas();
     }
+
+    public void updateGraphs() {
+        this.speedToFOVChart.getData().clear();
+        this.speedToVAChart.getData().clear();
+        this.FOVToVAChart.getData().clear();
+        if (allSpeciesComboBox.getValue() == null || allSpeciesComboBox.getValue().isEmpty()) return;
+        Specie specie = Environment.getSpecieByName(this.allSpeciesComboBox.getValue(), Herbivore.class);
+        if (specie == null) {
+            specie = Environment.getSpecieByName(this.allSpeciesComboBox.getValue(), Carnivore.class);
+            if (specie == null) return;
+        }
+        XYChart.Series<Float, Float> speedToFOVSeries = new XYChart.Series<>();
+        XYChart.Series<Float, Float> speedToVASeries = new XYChart.Series<>();
+        XYChart.Series<Float, Float> FOVToVASeries = new XYChart.Series<>();
+
+        for (Animal animal : Environment.getAnimals()) {
+            if (!animal.getSpecie().equals(specie)) continue;
+            speedToFOVSeries.getData().add(new XYChart.Data<>(animal.speed, animal.fieldOfView));
+            speedToVASeries.getData().add(new XYChart.Data<>(animal.speed, animal.viewArea));
+            FOVToVASeries.getData().add(new XYChart.Data<>(animal.fieldOfView, animal.viewArea));
+        }
+        this.speedToFOVChart.getData().add(speedToFOVSeries);
+        this.speedToVAChart.getData().add(speedToVASeries);
+        this.FOVToVAChart.getData().add(FOVToVASeries);
+    }
+
+    public void setSpeedLabel(float speed) { speedLabel.setText(String.valueOf(speed)); }
+    public void setFOVLabel(float FOV) { fovLabel.setText(String.valueOf(FOV)); }
+    public void setVaLabel(float VA) { vaLabel.setText(String.valueOf(VA)); }
 }

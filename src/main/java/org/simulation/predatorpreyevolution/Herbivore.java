@@ -2,9 +2,12 @@ package org.simulation.predatorpreyevolution;
 
 import java.util.ArrayList;
 
-public class Herbivore extends Animal{
+public final class Herbivore extends Animal {
     public Herbivore(Point startingPosition, Specie specie) {
         super(startingPosition, specie);
+    }
+    public Herbivore(Point startingPosition, Specie specie, float baseSpeed, float baseFieldOfView, float baseViewArea) {
+        super(startingPosition, specie, baseSpeed, baseFieldOfView, baseViewArea);
     }
 
     @Override

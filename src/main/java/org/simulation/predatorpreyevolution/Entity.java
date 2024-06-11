@@ -1,6 +1,6 @@
 package org.simulation.predatorpreyevolution;
 
-public class Entity {
+public abstract sealed class Entity permits Animal, Plant {
     protected Point position;
     protected float energy;
 
@@ -9,11 +9,11 @@ public class Entity {
         this.energy = 0;
     }
 
-    public void update() {
-
-    }
+    public abstract void update();
     public Point getPosition() { return this.position; }
     public float getEnergy() { return this.energy; }
+    public abstract float getChanceOfWinning(Animal animal);
+    public abstract float getConsumptionGainedEnergy();
 
-    public void kill() {}
+    public abstract void kill();
 }

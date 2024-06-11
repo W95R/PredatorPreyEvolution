@@ -34,4 +34,11 @@ public class Point {
         float angleDifference = (direction - (float) Math.atan2(p.y - this.y, p.x - this.x) + Point.FULL_ANGLE) % Point.FULL_ANGLE;
         return angleDifference < fieldOfView / 2 || angleDifference > Point.FULL_ANGLE - fieldOfView / 2;
     }
+
+    public float getAngle(Point p) {
+        return ((float) Math.atan2(p.y - this.y, p.x - this.x) + Point.FULL_ANGLE) % Point.FULL_ANGLE;
+    }
+    public static float getAngleDifference(float angle1, float angle2) {
+        return (angle1 - angle2 + Point.FULL_ANGLE) % Point.FULL_ANGLE;
+    }
 }

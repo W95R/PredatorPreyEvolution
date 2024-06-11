@@ -66,7 +66,6 @@ public class Environment {
     }
 
     private static void update() {
-        System.out.println("Update: " + Environment.time);
         Environment.time++;
         for (Animal animal : Environment.animals) animal.predictNextMove();
         for (Animal animal : Environment.animals) animal.update();
@@ -77,10 +76,33 @@ public class Environment {
         Plant.updatePlants();
         Environment.commitPlantAddition();
         Environment.printBoardState();
+        Environment.mainViewController.updateGraphs();
+//        float animalsCount = 0;
+//        float averageSpeed = 0;
+//        float averageFOV = 0;
+//        float averageVA = 0;
+//        for (Animal animal : Environment.animals) {
+//            if(!animal.getSpecie().getName().equals("Rabbit"))
+//                continue;
+//            animalsCount++;
+//            averageSpeed += animal.speed;
+//            averageFOV += animal.fieldOfView;
+//            averageVA += animal.viewArea;
+//        }
+//        if(animalsCount > 0) {
+//            averageSpeed /= animalsCount;
+//            averageFOV /= animalsCount;
+//            averageVA /= animalsCount;
+//        }
+//
+//        Environment.mainViewController.setSpeedLabel(averageSpeed);
+//        Environment.mainViewController.setFOVLabel(averageFOV);
+//        Environment.mainViewController.setVaLabel(averageVA);
     }
 
     public static void addAnimalToAdditionList(Animal animal) { Environment.animalsToAdd.add(animal); }
     public static void commitAnimalAddition() {
+        if (Environment.animals.size() > 1000) Environment.animalsToAdd.clear();;
         Environment.animals.addAll(Environment.animalsToAdd);
         Environment.animalsToAdd.clear();
     }
@@ -102,6 +124,14 @@ public class Environment {
         Environment.plantsToRemove.clear();
     }
     public static List<Plant> getPlants() { return Environment.plants; }
+
+    public static boolean isAlive(Entity entity) {
+        if (entity instanceof Animal)
+            return !Environment.animalsToRemove.contains(entity);
+        if (entity instanceof Plant)
+            return !Environment.plantsToRemove.contains(entity);
+        return false;
+    }
 
     public static List<Specie> getHerbivorousSpecies() { return Environment.herbivorousSpecies; }
     public static List<Specie> getCarnivorousSpecies() { return Environment.carnivorousSpecies; }
