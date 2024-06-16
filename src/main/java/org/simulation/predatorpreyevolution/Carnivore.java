@@ -3,9 +3,22 @@ package org.simulation.predatorpreyevolution;
 import java.util.ArrayList;
 
 public final class Carnivore extends Animal {
+    /**
+     * Creates carnivore with starting speed, fieldOfView and viewArea values from specie
+     * @param startingPosition carnivore's staring position
+     * @param specie specie to which carnivore belongs
+     */
     public Carnivore(Point startingPosition, Specie specie) {
         super(startingPosition, specie);
     }
+    /**
+     * Creates carnivore with speed, fieldOfView and viewArea values mutated based on mutation rate from specie
+     * @param startingPosition carnivore's staring position
+     * @param specie specie to which carnivore belongs
+     * @param baseSpeed speed to be mutated
+     * @param baseFieldOfView fieldOfView to be mutated
+     * @param baseViewArea viewArea to be mutated
+     */
     public Carnivore(Point startingPosition, Specie specie, float baseSpeed, float baseFieldOfView, float baseViewArea) {
         super(startingPosition, specie, baseSpeed, baseFieldOfView, baseViewArea);
     }

@@ -25,7 +25,7 @@ public class Specie {
     private float lifeDurationAverage;
     private float lifeDurationStandardDeviation;
 
-    private int reproductionRate;
+    private final int reproductionRate;
     private boolean isCannibalistic;
     private boolean reproduceByDivision;
 
@@ -67,7 +67,7 @@ public class Specie {
 
     /**
      * Checks if specie is saved in environment
-     * @return is specie saved in environemnt
+     * @return is specie saved in environment
      */
     public boolean isAddedToEnvironment() {
         if (this.name == null) return false;
@@ -131,7 +131,6 @@ public class Specie {
     public void setColor(Color color) {
         this.color = color;
     }
-
     public void setStartingPopulation(int startingPopulation) { this.startingPopulation = startingPopulation; }
 
     public void setStartingSpeed(float startingSpeed) { this.startingSpeed = startingSpeed; }
@@ -149,14 +148,13 @@ public class Specie {
     public void setLifeDurationAverage(float lifeDurationAverage) { this.lifeDurationAverage = lifeDurationAverage; }
     public void setLifeDurationStandardDeviation(float lifeDurationStandardDeviation) { this.lifeDurationStandardDeviation = lifeDurationStandardDeviation; }
 
-    public void setReproductionRate(int reproductionRate) { this.reproductionRate = reproductionRate; }
     public void setIsCannibalistic(boolean isCannibalistic) { this.isCannibalistic = isCannibalistic; }
+    public void setReproduceByDivision(boolean reproduceByDivision) { this.reproduceByDivision = reproduceByDivision; }
 
     // Getters
     public Class<? extends Animal> getAnimalType() { return animalType; }
     public String getName() { return this.name; }
     public Color getColor() { return color; }
-
     public int getStartingPopulation() { return this.startingPopulation; }
 
     public float getStartingSpeed() { return this.startingSpeed; }
@@ -176,12 +174,5 @@ public class Specie {
 
     public int getReproductionRate() { return reproductionRate; }
     public boolean getIsCannibalistic() { return this.isCannibalistic;}
-
-    public boolean isReproduceByDivision() {
-        return reproduceByDivision;
-    }
-
-    public void setReproduceByDivision(boolean reproduceByDivision) {
-        this.reproduceByDivision = reproduceByDivision;
-    }
+    public boolean isReproduceByDivision() { return reproduceByDivision; }
 }

@@ -7,20 +7,27 @@ public abstract sealed class Animal extends Entity permits Carnivore, Herbivore 
 
     protected final Specie specie;
     protected final int death_time;
+    private int reproductionTime;   // Used only with reproduction by division
     protected final boolean isMale;
 
-    protected float speed;
-    protected float fieldOfView;
-    protected float viewArea;
+    protected final float speed;
+    protected final float fieldOfView;
+    protected final float viewArea;
 
     protected float nextMoveDirectionAngle;
     private int reproductoryTimeOut;
+
     private static final int bornReproductoryTimeout = 30;
     private static final int regularReproductoryTimeout = 10;
+    private static final int interactionDistanceSquared = 25;
+    private static final int consumptionGainedEnergyMultiplier = 5;
 
-    private int reproductionTime;
 
-
+    /**
+     * Creates animal with starting speed, fieldOfView and viewArea values from specie
+     * @param startingPosition animal's staring position
+     * @param specie specie to which animal belongs
+     */
     public Animal(Point startingPosition, Specie specie) {
         super(startingPosition);
         Environment.addAnimalToAdditionList(this);
@@ -35,6 +42,15 @@ public abstract sealed class Animal extends Entity permits Carnivore, Herbivore 
         this.energy = this.getEnergyUsage() * bornReproductoryTimeout;
         this.reproductionTime = Environment.getTime() + this.specie.getRandomLifeDuration() / 3;
     }
+
+    /**
+     * Creates animal with speed, fieldOfView and viewArea values mutated based on mutation rate from specie
+     * @param startingPosition animal's staring position
+     * @param specie specie to which animal belongs
+     * @param baseSpeed speed to be mutated
+     * @param baseFieldOfView fieldOfView to be mutated
+     * @param baseViewArea viewArea to be mutated
+     */
     public Animal(Point startingPosition, Specie specie, float baseSpeed, float baseFieldOfView, float baseViewArea) {
         super(startingPosition);
         Environment.addAnimalToAdditionList(this);
@@ -50,32 +66,36 @@ public abstract sealed class Animal extends Entity permits Carnivore, Herbivore 
         this.reproductionTime = Environment.getTime() + this.specie.getRandomLifeDuration() / 3;
     }
 
+    /**
+     * Calculates best next move and saves it in nextMoveDirectionAngle
+     */
     public void predictNextMove() {
         ArrayList<Entity> targets = this.getTargets();
         ArrayList<Animal> enemies = this.getEnemies();
         ArrayList<Animal> reproductoryTargets = this.getReproductoryTargets();
 
         if (targets.isEmpty() && enemies.isEmpty() && reproductoryTargets.isEmpty()) {
-            this.nextMoveDirectionAngle = this.directionAngle + ((float) Math.random() * 0.1f - 0.05f + Point.FULL_ANGLE);
-            this.nextMoveDirectionAngle %= Point.FULL_ANGLE;
+            this.nextMoveDirectionAngle = Point.getRandomAngleInRange(this.directionAngle, 0.1f);
             return;
         }
 
         double maxScore = calculateScore(this.directionAngle, targets, enemies, reproductoryTargets);
-
-        for (double angle = 0; angle < 2 * Math.PI; angle += Math.PI / 90) {
+        for (double angle = 0; angle < Point.FULL_ANGLE; angle += Math.PI / 90) {
             double score = calculateScore(angle, targets, enemies, reproductoryTargets);
-            if (score > maxScore) {
-                maxScore = score;
-                this.nextMoveDirectionAngle = (float) angle;
-            }
+            if (score < maxScore) continue;
+            maxScore = score;
+            this.nextMoveDirectionAngle = (float) angle;
         }
-//        if (!targets.isEmpty() || !enemies.isEmpty() || !reproductoryTargets.isEmpty()) {
-//            System.out.println("t: " + targets.size() + " e: " + enemies.size() + " r: " + reproductoryTargets.size());
-//            System.out.println("b: " + this.nextMoveDirectionAngle + " d: " + maxScore);
-//        }
     }
 
+    /**
+     * Calculates score for given angle based on visible entities
+     * @param angle angle tested
+     * @param targets visible targets
+     * @param enemies visible enemies
+     * @param reproductoryTargets visible reproductory targets
+     * @return calculated score
+     */
     private double calculateScore(double angle, ArrayList<Entity> targets, ArrayList<Animal> enemies, ArrayList<Animal> reproductoryTargets) {
         double score = 0.0;
 
@@ -117,22 +137,20 @@ public abstract sealed class Animal extends Entity permits Carnivore, Herbivore 
         return score;
     }
 
+    /**
+     * Updates animal position and energy, eats targets in range, reproduces, and kills animal if needed
+     */
     @Override
     public void update() {
         this.directionAngle = this.nextMoveDirectionAngle;
-        this.move();
-        ArrayList<Entity> entitiesInRange = this.getEntitiesInRange();
-        if (!this.specie.isReproduceByDivision() && this.isMale && this.reproductoryTimeOut < Environment.getTime())
-            for (Entity entity: entitiesInRange)
-                if (entity instanceof Animal)
-                    if (this.isReproductoryTarget((Animal)entity) )
-                        this.reproduce((Animal)entity);
-        for (Entity entity: entitiesInRange)
-            if (this.isTarget(entity))
-                this.eat(entity);
-        if (death_time < Environment.getTime()) this.kill();
-        if (reproductionTime < Environment.getTime()) reproduceByDivision();
         this.energy -= this.getEnergyUsage();
+        this.move();
+
+        ArrayList<Entity> entitiesInRange = this.getEntitiesInRange();
+        this.reproductionCycle(entitiesInRange);
+        this.eatingCycle(entitiesInRange);
+
+        if (death_time < Environment.getTime()) this.kill();
         if (energy <= 0) this.kill();
     }
     @Override public float getChanceOfWinning(Animal animal) {
@@ -140,13 +158,34 @@ public abstract sealed class Animal extends Entity permits Carnivore, Herbivore 
         if (this instanceof Carnivore && animal instanceof Herbivore) return 1f;
         return this.energy / (this.energy + animal.getEnergy());
     }
-    @Override public float getConsumptionGainedEnergy() { return this.energy * 5; }
+    @Override public float getConsumptionGainedEnergy() { return this.energy * Animal.consumptionGainedEnergyMultiplier; }
 
+    /**
+     * Checks if given entity is a possible target (is consumable by this animal)
+     * @param entity checked entity
+     * @return is entity a target
+     */
     protected abstract boolean isTarget(Entity entity);
+    /**
+     * Checks if given entity is an enemy for this animal
+     * @param animal checked animal
+     * @return is animal an enemy
+     */
     protected abstract boolean isEnemy(Animal animal);
+    /**
+     * Checks if given entity is a possible reproductory target for this animal
+     * @param animal checked animal
+     * @return is animal a reproductory target
+     */
     protected boolean isReproductoryTarget(Animal animal) {
+        if (this.specie.isReproduceByDivision()) return false;
         return animal.getSpecie().equals(this.specie) && animal.isMale != this.isMale;
     }
+    /**
+     * Checks if entity is visible by this animal
+     * @param entity checked entity
+     * @return is visible
+     */
     protected boolean isEntityVisible(Entity entity) {
         return this.position.checkIfVisible(
                 entity.getPosition(),
@@ -156,7 +195,15 @@ public abstract sealed class Animal extends Entity permits Carnivore, Herbivore 
         );
     }
 
+    /**
+     * Returns list of visible targets (entities consumable by this animal)
+     * @return list of targets
+     */
     protected abstract ArrayList<Entity> getTargets();
+    /**
+     * Returns list of visible enemies
+     * @return list of visible enemies
+     */
     protected ArrayList<Animal> getEnemies() {
         ArrayList<Animal> enemies = new ArrayList<>();
         for (Animal animal : Environment.getAnimals())
@@ -164,28 +211,45 @@ public abstract sealed class Animal extends Entity permits Carnivore, Herbivore 
                 enemies.add(animal);
         return enemies;
     }
+    /**
+     * Returns list of visible reproductory targets
+     * @return list of visible reproductory targets
+     */
     protected ArrayList<Animal> getReproductoryTargets() {
         ArrayList<Animal> targets = new ArrayList<>();
-        // if (!this.isMale) return targets;
         for (Animal animal : Environment.getAnimals())
             if (this.isReproductoryTarget(animal) && this.isEntityVisible(animal))
                 targets.add(animal);
         return targets;
     }
+    /**
+     * Get entities in consumption/reproduction range
+     * @return list of entities
+     */
     protected ArrayList<Entity> getEntitiesInRange() {
         ArrayList<Entity> entities = new ArrayList<>();
         for (Entity entity: Environment.getPlants())
-            if (Environment.isAlive(entity) && entity.getPosition().calculateDistanceSquared(this.position) < 25)
+            if (Environment.isAlive(entity) && entity.getPosition().calculateDistanceSquared(this.position) < Animal.interactionDistanceSquared)
                 entities.add(entity);
         for (Entity entity: Environment.getAnimals())
-            if (Environment.isAlive(entity) && entity.getPosition().calculateDistanceSquared(this.position) < 25)
+            if (Environment.isAlive(entity) && entity.getPosition().calculateDistanceSquared(this.position) < Animal.interactionDistanceSquared)
                 entities.add(entity);
         return entities;
     }
 
-    protected float getDirection() {
-        return directionAngle;
+    /**
+     * Eats consumable entities from entities in range
+     * @param entitiesInRange entities in range
+     */
+    protected void eatingCycle(ArrayList<Entity> entitiesInRange) {
+        for (Entity entity: entitiesInRange)
+            if (this.isTarget(entity))
+                this.eat(entity);
     }
+    /**
+     * Eats provided entity of dies trying
+     * @param target entity to be eaten
+     */
     protected void eat(Entity target) {
         if (target.getChanceOfWinning(this) < (float) Math.random()) {
             this.energy += target.getConsumptionGainedEnergy();
@@ -195,6 +259,28 @@ public abstract sealed class Animal extends Entity permits Carnivore, Herbivore 
             this.kill();
         }
     }
+
+    /**
+     * Reproduces either with reproductory targets in range or by division
+     * @param entitiesInRange entities in range
+     */
+    protected void reproductionCycle(ArrayList<Entity> entitiesInRange) {
+        if (this.specie.isReproduceByDivision()) {
+            if (reproductionTime < Environment.getTime())
+                reproduceByDivision();
+        }
+        else {
+            if(!this.isMale || this.reproductoryTimeOut > Environment.getTime()) return;
+            for (Entity entity: entitiesInRange)
+                if (entity instanceof Animal)
+                    if (this.isReproductoryTarget((Animal)entity) )
+                        this.reproduce((Animal)entity);
+        }
+    }
+    /**
+     * Reproduces with target animal
+     * @param target reproductory target
+     */
     protected void reproduce(Animal target) {
         for (int i = this.specie.getReproductionRate(); i > 0; i--) {
             if (this instanceof Carnivore)
@@ -213,9 +299,12 @@ public abstract sealed class Animal extends Entity permits Carnivore, Herbivore 
                         (target.fieldOfView + this.fieldOfView) / 2,
                         (target.viewArea + this.viewArea) / 2
                 );
-            this.reproductoryTimeOut = Environment.getTime() + Animal.regularReproductoryTimeout;
         }
+        this.reproductoryTimeOut = Environment.getTime() + Animal.regularReproductoryTimeout;
     }
+    /**
+     * Reproduces by division
+     */
     protected void reproduceByDivision() {
         for (int i = this.specie.getReproductionRate(); i > 0; i--) {
             if (this instanceof Carnivore)
@@ -229,6 +318,10 @@ public abstract sealed class Animal extends Entity permits Carnivore, Herbivore 
             this.reproductionTime = this.death_time;
         }
     }
+
+    /**
+     * Moves animal based on current direction angle
+     */
     protected void move() {
         this.position.x += (float) Math.cos(this.directionAngle) * this.speed;
         this.position.y += (float) Math.sin(this.directionAngle) * this.speed;
@@ -237,6 +330,11 @@ public abstract sealed class Animal extends Entity permits Carnivore, Herbivore 
         if (this.position.x > Environment.getSize().x) this.position.x -= Environment.getSize().x;
         if (this.position.y > Environment.getSize().y) this.position.y -= Environment.getSize().y;
     }
+
+    /**
+     * Returns energy usage per simulation frame
+     * @return energy usage per simulation frame
+     */
     protected float getEnergyUsage(){
         return (this.speed * this.speed + this.viewArea / 150)/5;
     }
@@ -252,5 +350,9 @@ public abstract sealed class Animal extends Entity permits Carnivore, Herbivore 
     @Override
     public void kill() { Environment.addAnimalToRemovalList(this); }
 
+    /**
+     * Returns specie with which this animal is associated with
+     * @return specie
+     */
     public Specie getSpecie() { return this.specie; }
 }

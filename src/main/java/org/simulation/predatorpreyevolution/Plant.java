@@ -7,14 +7,24 @@ public final class Plant extends Entity {
 
     private static int startingPopulation = 2000;
 
+    /**
+     * Creates plant
+     * @param startingPosition plant's starting position
+     */
     public Plant(Point startingPosition) {
         super(startingPosition);
         Environment.addPlantToAdditionList(this);
         this.energy = startingEnergy;
     }
 
+    /**
+     * Increases plant's energy
+     */
     @Override public void update() { this.energy += energyIncreaseRate; }
 
+    /**
+     * Creates new plants on the map based on expansion rate
+     */
     public static void updatePlants() {
         for (int i = Math.min(10000 - Environment.getPlants().size(), expansionRate); i > 0; i--)
             new Plant(Environment.getSize().getRandomPointInBox());
